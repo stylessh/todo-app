@@ -87,6 +87,32 @@
   outline-offset: 2px;
 }
 
+.todo-search {
+  margin-bottom: 1rem;
+}
+
+.todo-search__input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.55rem 0.85rem;
+  font: inherit;
+  color: var(--text-h);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.todo-search__input::placeholder {
+  color: var(--text-muted);
+}
+
+.todo-search__input:focus {
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
 .todo-list {
   list-style: none;
   margin: 0;

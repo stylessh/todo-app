@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import {
   filterTodos,
+  searchTodos,
   type TodoFilter,
   useTodos,
 } from './useTodos'
@@ -18,11 +19,24 @@ export default function App() {
   } = useTodos()
   const [filter, setFilter] = useState<TodoFilter>('all')
   const [draft, setDraft] = useState('')
+  const [search, setSearch] = useState('')
 
-  const visible = useMemo(
+  const afterFilter = useMemo(
     () => filterTodos(todos, filter),
     [todos, filter],
   )
+
+  const visible = useMemo(
+    () => searchTodos(afterFilter, search),
+    [afterFilter, search],
+  )
+
+  const emptyMessage = useMemo(() => {
+    if (todos.length === 0) return 'No tasks yet. Add one above.'
+    if (afterFilter.length === 0) return 'Nothing to show for this filter.'
+    if (visible.length === 0) return 'No tasks match your search.'
+    return ''
+  }, [todos.length, afterFilter.length, visible.length])
 
   function onSubmit(e: FormEvent) {
     e.preventDefault()
@@ -55,13 +69,26 @@ export default function App() {
         </button>
       </form>
 
+      {todos.length > 0 && (
+        <div className="todo-search">
+          <label className="visually-hidden" htmlFor="todo-search">
+            Search tasks
+          </label>
+          <input
+            id="todo-search"
+            className="todo-search__input"
+            type="search"
+            autoComplete="off"
+            placeholder="Search tasks…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+      )}
+
       <ul className="todo-list" aria-label="Task list">
         {visible.length === 0 ? (
-          <li className="todo-list__empty">
-            {todos.length === 0
-              ? 'No tasks yet. Add one above.'
-              : 'Nothing to show for this filter.'}
-          </li>
+          <li className="todo-list__empty">{emptyMessage}</li>
         ) : (
           visible.map((todo) => (
             <li key={todo.id} className="todo-item">

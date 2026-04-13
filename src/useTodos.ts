@@ -89,3 +89,10 @@ export function filterTodos(todos: Todo[], filter: TodoFilter): Todo[] {
       return todos
   }
 }
+
+/** Narrows a list by case-insensitive substring match on title. Empty query keeps all. */
+export function searchTodos(todos: Todo[], query: string): Todo[] {
+  const q = query.trim().toLowerCase()
+  if (!q) return todos
+  return todos.filter((t) => t.title.toLowerCase().includes(q))
+}
