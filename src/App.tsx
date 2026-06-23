@@ -6,6 +6,8 @@ import {
   type TodoFilter,
   useTodos,
 } from './useTodos'
+import { ThemePicker } from './ThemePicker'
+import { useTheme } from './useTheme'
 import './App.css'
 
 export default function App() {
@@ -17,6 +19,7 @@ export default function App() {
     clearCompleted,
     counts,
   } = useTodos()
+  const { preference, setTheme } = useTheme()
   const [filter, setFilter] = useState<TodoFilter>('all')
   const [draft, setDraft] = useState('')
   const [search, setSearch] = useState('')
@@ -47,8 +50,11 @@ export default function App() {
   return (
     <div className="app">
       <header className="app__header">
-        <h1 className="app__title">Todos</h1>
-        <p className="app__subtitle">DiffKit playground</p>
+        <div className="app__heading">
+          <h1 className="app__title">Todos</h1>
+          <p className="app__subtitle">DiffKit playground</p>
+        </div>
+        <ThemePicker value={preference} onChange={setTheme} />
       </header>
 
       <form className="todo-form" onSubmit={onSubmit}>
