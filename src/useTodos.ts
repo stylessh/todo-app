@@ -90,9 +90,16 @@ export function filterTodos(todos: Todo[], filter: TodoFilter): Todo[] {
   }
 }
 
-/** Narrows a list by case-insensitive substring match on title. Empty query keeps all. */
+/**
+ * Narrows a list by case-insensitive search on title. The query is split into
+ * whitespace-separated terms, and a todo is kept only when its title matches
+ * every term (AND semantics). An empty query keeps all.
+ */
 export function searchTodos(todos: Todo[], query: string): Todo[] {
-  const q = query.trim().toLowerCase()
-  if (!q) return todos
-  return todos.filter((t) => t.title.toLowerCase().includes(q))
+  const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean)
+  if (terms.length === 0) return todos
+  return todos.filter((t) => {
+    const title = t.title.toLowerCase()
+    return terms.every((term) => title.includes(term))
+  })
 }

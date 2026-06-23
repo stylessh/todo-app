@@ -85,7 +85,7 @@ export default function App() {
             className="todo-search__input"
             type="search"
             autoComplete="off"
-            placeholder="Search tasks…"
+            placeholder="Search tasks… (e.g. buy milk)"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
