@@ -8,9 +8,41 @@ import {
 } from './useTodos'
 import { ThemePicker } from './ThemePicker'
 import { useTheme } from './useTheme'
+import { AuthForm } from './AuthForm'
+import { signOut, useSession } from './lib/auth-client'
 import './App.css'
 
 export default function App() {
+  const { data: session, isPending } = useSession()
+  const { preference, setTheme } = useTheme()
+
+  if (isPending) {
+    return (
+      <div className="app">
+        <p className="app__subtitle">Loading…</p>
+      </div>
+    )
+  }
+
+  if (!session) {
+    return (
+      <div className="app">
+        <header className="app__header">
+          <div className="app__heading">
+            <h1 className="app__title">Todos</h1>
+            <p className="app__subtitle">DiffKit playground</p>
+          </div>
+          <ThemePicker value={preference} onChange={setTheme} />
+        </header>
+        <AuthForm />
+      </div>
+    )
+  }
+
+  return <Todos userName={session.user.name || session.user.email} />
+}
+
+function Todos({ userName }: { userName: string }) {
   const {
     todos,
     addTodo,
@@ -52,9 +84,18 @@ export default function App() {
       <header className="app__header">
         <div className="app__heading">
           <h1 className="app__title">Todos</h1>
-          <p className="app__subtitle">DiffKit playground</p>
+          <p className="app__subtitle">Signed in as {userName}</p>
         </div>
-        <ThemePicker value={preference} onChange={setTheme} />
+        <div className="app__actions">
+          <ThemePicker value={preference} onChange={setTheme} />
+          <button
+            type="button"
+            className="app__signout"
+            onClick={() => signOut()}
+          >
+            Sign out
+          </button>
+        </div>
       </header>
 
       <form className="todo-form" onSubmit={onSubmit}>
